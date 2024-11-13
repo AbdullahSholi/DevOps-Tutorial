@@ -1,0 +1,17 @@
+{
+  "name": "devops-tutorial",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000D\u0000e\u0000v\u0000O\u0000p\u0000s\u0000-\u0000T\u0000u\u0000t\u0000o\u0000r\u0000i\u0000a\u0000l\u0000\r\u0000 \u0000",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "mongoose": "^8.8.1"
+  }
+}
