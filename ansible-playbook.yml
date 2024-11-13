@@ -1,0 +1,19 @@
+---
+- name: "Ansible configuration file for manage containerization the project with docker"
+  hosts: localhost 
+  tasks:
+    - name: "Ensure Docker service is started"
+      service: 
+        name: docker 
+        state: started
+        enabled: yes
+    - name: "Stop & Delete Docker containers using docker-compose"
+      community.docker.docker_compose_v2:
+        project_src: /mnt/c/Users/group/Desktop/DevOps-Tutorial
+        state: absent 
+    - name: "Build & Run Docker containers using docker-compose"
+      community.docker.docker_compose_v2:
+        project_src: /mnt/c/Users/group/Desktop/DevOps-Tutorial
+        state: present
+        build: always    
+        
