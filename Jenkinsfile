@@ -65,7 +65,7 @@ pipeline {
                    -Dsonar.projectVersion=1.0 \
                    -Dsonar.sources=src/ \
                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov-report/index.html \
-                   -Dsonar.organization=DevOps-Sonar-s'''
+                   -Dsonar.organization=devops-sonar-s'''
             }
           }
         }
