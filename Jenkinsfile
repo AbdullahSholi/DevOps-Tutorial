@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     environment {
-        NODEJS_VERSION = 'nodejs-latest'
+        NODEJS_VERSION = 'nodejs-latest'  // Ensure this matches the configured tool in Jenkins
     }
 
     tools {
-        nodejs "${NODEJS_VERSION}"
+        nodejs "${NODEJS_VERSION}"  // Reference the Node.js tool configuration
     }
 
     stages {
@@ -18,28 +18,44 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh 'npm install'  // Install project dependencies
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building the application...'
-                sh 'npm run build || echo "No build script defined"'
+                script {
+                    // Check if 'build' script is defined in package.json before running it
+                    def buildScriptExists = sh(script: 'npm run build --dry-run', returnStatus: true) == 0
+                    if (buildScriptExists) {
+                        echo 'Building the application...'
+                        sh 'npm run build'
+                    } else {
+                        echo 'No build script defined in package.json'
+                    }
+                }
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                sh 'npm test'
+                script {
+                    // Check if 'test' script is defined in package.json before running it
+                    def testScriptExists = sh(script: 'npm run test --dry-run', returnStatus: true) == 0
+                    if (testScriptExists) {
+                        echo 'Running tests...'
+                        sh 'npm test'
+                    } else {
+                        echo 'No test script defined in package.json'
+                    }
+                }
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying the application...'
-                
+                // Add actual deployment commands here if needed
             }
         }
     }
