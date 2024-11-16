@@ -52,6 +52,24 @@ pipeline {
             }
         }
 
+        stage('code analysis with sonarqube') {
+          
+		  environment {
+             scannerHome = tool 'SonarQube Scanner'
+          }
+          steps {
+            withSonarQubeEnv('SonarCloud') {
+               sh '''${scannerHome}/bin/SonarQube Scanner \
+                   -Dsonar.projectKey=expressjs-app \
+                   -Dsonar.projectName=express-repo \
+                   -Dsonar.projectVersion=1.0 \
+                   -Dsonar.sources=src/ \
+                   -Dsonar.javascript.lcov.reportPaths=coverage/lcov-report/index.html \
+                   -Dsonar.organization=DevOps-Sonar-s'''
+            }
+          }
+        }
+
         stage('Deploy') {
             steps {
                 echo 'Deploying the application...'
@@ -69,3 +87,5 @@ pipeline {
         }
     }
 }
+
+
