@@ -55,11 +55,11 @@ pipeline {
         stage('code analysis with sonarqube') {
           
 		  environment {
-             scannerHome = tool 'SonarQube Scanner'
+             scannerHome = tool 'SonarQube-Scanner'
           }
           steps {
             withSonarQubeEnv('SonarCloud') {
-               sh '''${scannerHome}/bin/SonarQube Scanner \
+               sh '''${scannerHome}/bin/sonar-scanner \
                    -Dsonar.projectKey=expressjs-app \
                    -Dsonar.projectName=express-repo \
                    -Dsonar.projectVersion=1.0 \
