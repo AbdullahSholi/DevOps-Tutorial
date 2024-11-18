@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: app-deployment
+  labels: 
+    app: node-app
+spec: 
+  replicas: 3
+  selector:
+    matchLabels:
+      app: node-app
+  template:
+    metadata:
+      labels: 
+        app: node-app
+    spec: 
+      containers: 
+        - name: node-container
+          image: abdullahgsholi/devops-tutorial-app:latest
+          ports:
+            - containerPort: 3000
+          env: 
+            - name: MONGO_URL
+              value: mongodb://mongo-service:27017/mydatabase
+

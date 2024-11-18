@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(process.env.MONGO_URI || 'mongodb://mongo-service:27017/mydatabase ', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
