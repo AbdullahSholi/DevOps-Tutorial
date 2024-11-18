@@ -1,3 +1,5 @@
 /node_modules
 .gitignore
 vars.yml
+DevOps.pem
+DevOps2.pem
