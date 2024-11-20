@@ -61,10 +61,10 @@ jobs: # A list of jobs that will run
 
       - name: Create also 4 Nodes 
         run: |
-          kubectl node add
-          kubectl node add
-          kubectl node add
-          kubectl node add
+          minikube node add
+          minikube node add
+          minikube node add
+          minikube node add
 
 
       - name: Deploy to Minikube
@@ -92,5 +92,5 @@ jobs: # A list of jobs that will run
 
       - name: Display all minikube resources
         run: |
-          kubectl get nodes,deployments,rs,svc,pods         
+          kubectl get nodes,deployments,rs,svc,pods --show-labels    
 
