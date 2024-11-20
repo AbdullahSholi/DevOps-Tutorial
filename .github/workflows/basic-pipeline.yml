@@ -38,6 +38,8 @@ jobs: # A list of jobs that will run
         with:
           playbook: ansible-playbook.yml
           directory: ./
+          options: |
+            --extra-vars "docker_username=${{ secrets.DOCKER_USERNAME }} docker_password=${{ secrets.DOCKER_PASSWORD }}"
 
       - name: Set up Minikube
         uses: medyagh/setup-minikube@latest
