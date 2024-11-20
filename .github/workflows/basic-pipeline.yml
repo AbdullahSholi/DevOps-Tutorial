@@ -21,6 +21,47 @@ jobs: # A list of jobs that will run
       - name: Check which event triggered the workflow pipeline
         uses: echo "Hello, this workflow was triggered by ${{github.event_name}}"
 
+      - name: Set up Docker Buildx 
+        uses: docker/setup-buildx-action@v2 # Used for building multi-platform Docker images.
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      
+      - name: Set up Ansible
+        uses: ansible/ansible-setup@v1
+
+      - name: Run Ansible Playbook
+        uses: appleboy/ansbile-playbook-action@v1
+        with: 
+          playbook_path: "ansible-playbook.yml"  
+          extra_vars: |
+            DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}  
+
+      - name: Set up Minikube
+        uses: chrisshort/minikube-action@v2
+        with:
+          minikube-version: 'latest'
+          driver: 'docker'
+
+      - name: Set up kubectl
+        uses: kubernetes-actions/kubectl-action@v2
+        with: 
+          version: 'v1.21.0'
+
+      - name: Deploy to Minikube
+        run: | 
+          kubectl cluster-info
+          kubectl apply -f ./pv.yml
+          kubectl apply -f ./mongo-pvc.yml
+          kubectl apply -f ./app-service.yml
+          kubectl apply -f ./mongo-deployment.yml
+          kubectl apply -f ./mongo-service.yml
+          kubectl apply -f ./node-app-deployment.yml
+
       - name: Set Up Node.js
         uses: actions/setup-node@v4 # setup-node is action maintained by Github Team, used in workflows to set up a specific version of Node.js in a CI/CD pipeline. 
         with: 
