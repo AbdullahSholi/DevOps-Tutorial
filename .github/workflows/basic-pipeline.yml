@@ -40,6 +40,7 @@ jobs: # A list of jobs that will run
           sudo apt install software-properties-common
           sudo add-apt-repository --yes --update ppa:ansible/ansible
           sudo apt install ansible
+          sudo ansible-galaxy collection install community.docker
 
 
 
