@@ -3,8 +3,8 @@
   hosts: localhost 
 
   vars: 
-    dockerhub_username: "{{ DOCKERHUB_USERNAME }}"
-    dockerhub_password: "{{ DOCKERHUB_PASSWORD }}"
+    dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+    dockerhub_password: ${{ secrets.DOCKERHUB_PASSWORD }}
     docker_images:
       - { name: "devops-tutorial-app", tag: "latest" }
       - { name: "mongo", tag: "5.0" }
