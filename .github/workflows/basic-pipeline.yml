@@ -33,6 +33,11 @@ jobs: # A list of jobs that will run
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Install requests library
+        run:
+          sudo pipx inject ansible-core requests
+
+
       - name: Play Ansible Playbook
         uses: dawidd6/action-ansible-playbook@v2
         with:
