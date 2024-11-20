@@ -3,8 +3,8 @@
   hosts: localhost 
 
   vars: 
-    DOCKERHUB_USERNAME: "{{ DOCKERHUB_USERNAME }}"
-    DOCKERHUB_PASSWORD: "{{ DOCKERHUB_PASSWORD }}"
+    dockerhub_username: "{{ DOCKERHUB_USERNAME }}"
+    dockerhub_password: "{{ DOCKERHUB_PASSWORD }}"
     docker_images:
       - { name: "devops-tutorial-app", tag: "latest" }
       - { name: "mongo", tag: "5.0" }
@@ -28,18 +28,18 @@
 
     - name: Log in to Docker Hub
       community.docker.docker_login:
-        username: "{{ DOCKERHUB_USERNAME }}"
-        password: "{{ DOCKERHUB_PASSWORD }}"
+        username: "{{ dockerhub_username }}"
+        password: "{{ dockerhub_password }}"
 
     - name: "Tag Docker images"
       loop: "{{ docker_images }}"
       ansible.builtin.shell:
-        cmd: "docker tag {{ item.name }}:{{ item.tag }} {{ DOCKERHUB_USERNAME }}/{{ item.name }}:{{ item.tag }}"
+        cmd: "docker tag {{ item.name }}:{{ item.tag }} {{ dockerhub_username }}/{{ item.name }}:{{ item.tag }}"
 
     - name: "Push Docker images to Docker Hub"
       loop: "{{ docker_images }}"
       ansible.builtin.shell:
-        cmd: "docker push {{ DOCKERHUB_USERNAME }}/{{ item.name }}:{{ item.tag }}"
+        cmd: "docker push {{ dockerhub_username }}/{{ item.name }}:{{ item.tag }}"
 
     - name: Log out from Docker Hub
       ansible.builtin.shell:
