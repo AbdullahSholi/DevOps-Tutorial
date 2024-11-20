@@ -1,0 +1,85 @@
+name: basic-pipeline # The name of workflow
+on: #  The event(s) that trigger the workflow
+  push:
+    branches:
+      - dev # Run the pipeline when a commit is pushed to dev branch
+      - main # Run the pipeline when a commit is pushed to main branch
+  pull_request:
+    branches: 
+      - main  # Run the pipeline when a pull request is opened, synchronized or repoened targeting the main branch
+
+jobs: # A list of jobs that will run
+  build:
+    runs-on: ubuntu-latest # make provisioning for linux to test out code inside it ( يعني بنحددلها الاينفايرومنت اللي بدنا نعمل فيها اكسييكيوشن للمشروع اللي عنا ) 
+
+    steps: # Defines sequential actions (or tasks) to execute within the job.
+           # The steps ensure that all nessecary tasks for building and testing the project are executed in order
+      
+      - name: Checkout Code       # Fetch the repository code into the job's workspace
+        uses: actions/checkout@v3 # refers to a reusable Github Action to clone the repository
+                                  # provides access to the source code for the subsequent steps in the CI Pipeline
+      - name: Check which event triggered the workflow pipeline
+        run: echo "Hello, this workflow was triggered by ${{github.event_name}}"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Install requests library
+        run:
+          sudo pipx inject ansible-core requests
+
+
+      - name: Play Ansible Playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: ansible-playbook.yml
+          directory: ./
+          options: |
+            --extra-vars "docker_username=${{ secrets.DOCKERHUB_USERNAME }} docker_password=${{ secrets.DOCKERHUB_PASSWORD }}"
+
+      - name: Set up Minikube
+        uses: medyagh/setup-minikube@latest
+        with:
+          driver: 'docker'
+
+      - name: Set up kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          kubectl version --client --output=yaml
+
+
+      - name: Deploy to Minikube
+        run: | 
+          kubectl cluster-info
+          kubectl apply -f ./pv.yml
+          kubectl apply -f ./mongo-pvc.yml
+          kubectl apply -f ./app-service.yml
+          kubectl apply -f ./mongo-deployment.yml
+          kubectl apply -f ./mongo-service.yml
+          kubectl apply -f ./node-app-deployment.yml
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4 # setup-node is action maintained by Github Team, used in workflows to set up a specific version of Node.js in a CI/CD pipeline. 
+        with: 
+          node-version: 18 # Specify the Node.js version ( it's optional, if we don't specify it, it will take the version from your PATH )
+          cache: 'npm' # Cache dependencies to speed up subsequent builds
+          cache-dependency-path: './' # path for package-lock.json file
+                                      # It's always recommended to commit the lockfile of your package manager for security and performance reasons. For more information consult the "Working with lockfiles" section of the Advanced usage guide.
+
+      - name: Install Dependencies
+        run: npm install
+      - name: Run Tests 
+        run: npm test      
+

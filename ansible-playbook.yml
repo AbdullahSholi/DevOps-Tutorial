@@ -16,29 +16,29 @@
         enabled: yes
     - name: "Stop & Delete Docker containers using docker-compose"
       community.docker.docker_compose_v2:
-        project_src: /home/abdullah/Desktop/DevOps-Tutorial
+        project_src: .
         state: absent 
 
     - name: "Build & Run Docker containers using docker-compose"
       community.docker.docker_compose_v2:
-        project_src: /home/abdullah/Desktop/DevOps-Tutorial
+        project_src: .
         state: present
         build: always   
 
     - name: Log in to Docker Hub
       community.docker.docker_login:
-        username: "{{ DOCKERHUB_USERNAME }}"
-        password: "{{ DOCKERHUB_PASSWORD }}"
+        username: "{{ docker_username }}"
+        password: "{{ docker_password }}"
 
     - name: "Tag Docker images"
       loop: "{{ docker_images }}"
       ansible.builtin.shell:
-        cmd: "docker tag {{ item.name }}:{{ item.tag }} {{ DOCKERHUB_USERNAME }}/{{ item.name }}:{{ item.tag }}"
+        cmd: "docker tag {{ item.name }}:{{ item.tag }} {{ docker_username }}/{{ item.name }}:{{ item.tag }}"
 
     - name: "Push Docker images to Docker Hub"
       loop: "{{ docker_images }}"
       ansible.builtin.shell:
-        cmd: "docker push {{ DOCKERHUB_USERNAME }}/{{ item.name }}:{{ item.tag }}"
+        cmd: "docker push {{ docker_username }}/{{ item.name }}:{{ item.tag }}"
 
     - name: Log out from Docker Hub
       ansible.builtin.shell:
