@@ -36,13 +36,18 @@ jobs: # A list of jobs that will run
       - name: Install Ansible
         shell: bash
         run: |
+          sudo mkdir -p /usr/local/lib/docker/cli-plugins
+          sudo curl -SL https://github.com/docker/compose/releases/download/v2.24.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+          sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+          docker compose version
           sudo apt update
           sudo apt install software-properties-common
           sudo add-apt-repository --yes --update ppa:ansible/ansible
           sudo apt install ansible
-          sudo ansible-galaxy collection install community.docker
+          sudo ansible-galaxy collection install -U community.docker
           sudo ansible-galaxy collection list
           sudo ansible-galaxy collection install community.docker --upgrade
+          sudo ansible-galaxy collection verify community.docker
 
 
 

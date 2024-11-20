@@ -15,12 +15,12 @@
         state: started
         enabled: yes
     - name: "Stop & Delete Docker containers using docker-compose"
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_src: .
         state: absent 
 
     - name: "Build & Run Docker containers using docker-compose"
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_src: .
         state: present
         build: always   
