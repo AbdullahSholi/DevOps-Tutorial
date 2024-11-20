@@ -38,6 +38,8 @@ jobs: # A list of jobs that will run
         run: |
           sudo apt update
           sudo apt install -y ansible
+          sudo ansible-galaxy collection install community.docker
+
 
 
       - name: Play Ansible Playbook
