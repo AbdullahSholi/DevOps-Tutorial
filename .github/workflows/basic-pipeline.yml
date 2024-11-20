@@ -42,8 +42,9 @@ jobs: # A list of jobs that will run
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook ./ansible-playbook.yml 
-            --extra-vars "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }} DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }}"
+          ansible-playbook ./ansible-playbook.yml \
+            --extra-vars "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }} DOCKERHUB_PASSWORD=${{ secrets.DOCKERHUB_PASSWORD }} docker_images='[{\"name\": \"devops-tutorial-app\", \"tag\": \"latest\"}, {\"name\": \"mongo\", \"tag\": \"5.0\"}]'"
+
 
 
       - name: Set up Minikube
