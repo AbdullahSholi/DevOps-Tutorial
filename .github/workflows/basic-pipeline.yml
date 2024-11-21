@@ -59,16 +59,23 @@ jobs: # A list of jobs that will run
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
           kubectl version --client --output=yaml
 
+      - name: Create also 4 Nodes 
+        run: |
+          minikube node add
+          minikube node add
+          minikube node add
+          minikube node add
+
 
       - name: Deploy to Minikube
         run: | 
           kubectl cluster-info
-          kubectl apply -f ./pv.yml
-          kubectl apply -f ./mongo-pvc.yml
-          kubectl apply -f ./app-service.yml
-          kubectl apply -f ./mongo-deployment.yml
-          kubectl apply -f ./mongo-service.yml
-          kubectl apply -f ./node-app-deployment.yml
+          kubectl apply -f ./k8s/pv.yml
+          kubectl apply -f ./k8s/mongo-pvc.yml
+          kubectl apply -f ./k8s/app-service.yml
+          kubectl apply -f ./k8s/mongo-deployment.yml
+          kubectl apply -f ./k8s/mongo-service.yml
+          kubectl apply -f ./k8s/node-app-deployment.yml   
 
       - name: Set Up Node.js
         uses: actions/setup-node@v4 # setup-node is action maintained by Github Team, used in workflows to set up a specific version of Node.js in a CI/CD pipeline. 
@@ -81,5 +88,9 @@ jobs: # A list of jobs that will run
       - name: Install Dependencies
         run: npm install
       - name: Run Tests 
-        run: npm test      
+        run: npm test
+
+      - name: Display all minikube resources
+        run: |
+          kubectl get nodes,deployments,rs,svc,pods --show-labels    
 
